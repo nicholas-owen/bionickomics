@@ -171,8 +171,9 @@ annotation_file<-DownloadEnsemblGTF(version = version,
 
 ref_genome_dir<-gsub("(.*)/.*","\\1",annotation_file)
 
-annotation_dir<-paste0(ref_genome_dir, "/annotation.v",  sub(".*-", "", version))
+annotation_dir<-paste0(ref_genome_dir, "/annotation.v",  sub(".*-", "", version), "_", organism)
 dir.create(annotation_dir)
+cat("Creating output dir: ", annotation_dir)
 setwd(annotation_dir)
 
 GTF.file.local<-list.files(path = "../", pattern="*.gtf.gz")[1]
