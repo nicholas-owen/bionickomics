@@ -7,10 +7,14 @@
 clean_GO_output(results, revigo)
 }
 \arguments{
-\item{revigo}{}
+\item{results}{GO over representation results data.frame}
+
+\item{revigo}{ReviGO reduced output data.frame
+
+Both data.frames should contain first column with GO terms}
 }
 \value{
-df
+data.frame
 }
 \description{
 Cleans Gene Ontology outputs and combines with ReviGO reduced data

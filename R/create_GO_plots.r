@@ -3,10 +3,12 @@
 
 #' Cleans Gene Ontology outputs and combines with ReviGO reduced data
 #'
-#' @param results
-#' @param revigo
+#' @param results GO over representation results data.frame
+#' @param revigo ReviGO reduced output data.frame
 #'
-#' @return df
+#' Both data.frames should contain first column with GO terms
+#'
+#' @return data.frame
 #' @export
 #'
 #' @examples
