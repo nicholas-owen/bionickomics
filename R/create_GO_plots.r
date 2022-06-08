@@ -12,8 +12,18 @@
 #' @examples
 clean_GO_output <- function(results, revigo) {
   colnames(results)[1] <- "geneSet"
-  df <- merge(results, revigo)
-  df <- subset(df, df$Eliminated == "False")
+  colnames(revigo)[1] <- "geneSet"
+
+  if (identical(results, revigo) == FALSE) {
+    df <- merge(results, revigo, by = "geneSet")
+    if ("Eliminated" %in% colnames(df))
+    {
+      df <- subset(df, df$Eliminated == "False")
+    }
+  } else {
+    df<-results
+  }
+
   df$overlapscaled <- (df$overlap) / (max(df$overlap))
   top.GO.number <- dim(df)[1]
   #set max to 16 for -log10pval
@@ -37,10 +47,13 @@ clean_GO_output <- function(results, revigo) {
 #'
 #' @examples
 make_GO_plots <- function(df, ont, fill) {
+  top.GO.number <- dim(df)[1]
+  maxP<-round(max(df$logp))+1
+
   p <-
     ggplot(df, aes(
       x = enrichmentRatio,
-      y = -log10(pValue),
+      y = logp,#-log10(pValue),
       label = description
     )) +
     geom_point(
@@ -59,22 +72,20 @@ make_GO_plots <- function(df, ont, fill) {
       legend.title = element_text(size = 14)
     ) +
     #expand_limits(x = 0, y = 0) +
-    geom_text_repel(size = 5,
+    geom_text_repel(size = 3,
                     #geom_label_repel if boxes required
                     data = df[1:top.GO.number, ],
                     ##use 1:topgenenumber of dataframe
                     #fontface = "italic",
                     #arrow = arrow(length = unit(0.01, "npc"), type = "closed", ends = "last"),
-                    force = 5)
-
-  p <-
-    p + scale_y_continuous(
-      limits = c(0, max(df$logp)+1),
+                    force = 5,
+                    min.segment.length = 0) + # or Inf if never needed
+    scale_y_continuous(
+      limits = c(0, maxP),
       expand = c(0, 0),
-      breaks = seq(0, max(df$logp)+1, by = 2)
-    )
-  p <-
-    p + scale_x_continuous(limits = c(
+      breaks = seq(0, maxP, by = 2)
+    ) +
+       scale_x_continuous(limits = c(
       0,
       round(max(df$enrichmentRatio) + 1),
       expand = c(0, 0),
@@ -83,9 +94,8 @@ make_GO_plots <- function(df, ont, fill) {
       ) + 1),
       by =
         1)
-    ))
-  p <-
-    p + theme_bw() + theme(legend.position = "none")
+    )) +
+      theme_bw() + theme(legend.position = "none")
 
   p
 
@@ -123,7 +133,7 @@ make_GO_plots <- function(df, ont, fill) {
   p2 <-
     ggplot(df, aes(
       x = enrichmentRatio,
-      y = -log10(pValue),
+      y = logp, #-log10(pValue),
       label = description
     )) +
     geom_point(
@@ -141,7 +151,8 @@ make_GO_plots <- function(df, ont, fill) {
       legend.text = element_text(size = 14),
       legend.title = element_text(size =
                                     14)
-    )# +
+    ) +
+
   #expand_limits(x = 0, y = 0) +
   #geom_text_repel( size=5, #geom_label_repel if boxes required
   #                data=df.final[1:top.GO.number,], ##use 1:topgenenumber of dataframe
@@ -151,25 +162,21 @@ make_GO_plots <- function(df, ont, fill) {
   #)
 
 
-  p2 <-
-    p2 + scale_y_continuous(
+  scale_y_continuous(
       limits = c(0, max(df$logp)+1),
       expand = c(0, 0),
       breaks = seq(0, max(df$logp)+1, by = 2)
-    )
-  p <-
-    p + scale_x_continuous(limits = c(
+    ) +
+    scale_x_continuous(limits = c(
       0,
       round(max(df$enrichmentRatio) + 1),
       expand = c(0, 0),
       breaks = seq(0, round(max(
         df$enrichmentRatio
       ) + 1),
-      by =
-        1)
-    ))
-  p2 <-
-    p2 + theme_bw() + theme(legend.position = "none")
+      by =1)
+    ))+
+    theme_bw() + theme(legend.position = "none")
 
 
   ggsave(
