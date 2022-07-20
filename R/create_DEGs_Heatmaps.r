@@ -96,7 +96,7 @@ create_DEGs_Heatmaps<-function(dataFolder, geneList="", outputFileName){
     results<-merge(resdata, annotation, by='gene_id', all.x = TRUE)
     message("Filtering results.")
     results<-results %>%
-      select(gene_id, gene_name, gene_biotype, everything()) %>%
+      dplyr::select(gene_id, gene_name, gene_biotype, everything()) %>%
       arrange(padj)
 
     filt.padj<-0.05
