@@ -14,7 +14,7 @@
 #' a<-counts_to_TPM(dds, annot)
 
 counts_to_TPM<-function(dds, annot){
-  countsNorm<-counts(dds, normalized=TRUE)
+  countsNorm<-DESeq2::counts(dds, normalized=TRUE)
   countsSampleNos<-dim(countsNorm)[2]
 
   # process annotation to get average tx length
