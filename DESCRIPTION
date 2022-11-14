@@ -17,4 +17,6 @@ LazyData: true
 Imports: 
     DESeq2,
     ggplot2,
-    PCAtools
+    gplots,
+    PCAtools,
+    RColorBrewer
