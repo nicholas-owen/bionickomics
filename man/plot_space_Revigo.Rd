@@ -2,9 +2,18 @@
 % Please edit documentation in R/plot_space_Revigo.r
 \name{plot_space_Revigo}
 \alias{plot_space_Revigo}
-\title{Plots 2D semantic space of ReviGO results for gene ontology analysis}
+\title{Plots 2D semantic space of ReviGO results for gene ontology analysis
+data format:
+(df format TermID,	Name,	Value,	LogSize,	Frequency,	Uniqueness,	Dispensability,	PC_0,	PC_1,	Representative)}
 \usage{
-plot_space_Revigo(revigoData, dispens, reduce = TRUE, output, ...)
+plot_space_Revigo(
+  revigoData,
+  dispens,
+  reduce = TRUE,
+  output,
+  scale = "as-is",
+  ...
+)
 }
 \arguments{
 \item{revigoData}{\itemize{
@@ -23,8 +32,14 @@ plot_space_Revigo(revigoData, dispens, reduce = TRUE, output, ...)
 \item filename with full path of output plot (.svg)
 }}
 
+\item{scale}{\itemize{
+\item scaling of Value; as-is (default) vs 'log'
+}}
+
 \item{...}{}
 }
 \description{
 Plots 2D semantic space of ReviGO results for gene ontology analysis
+data format:
+(df format TermID,	Name,	Value,	LogSize,	Frequency,	Uniqueness,	Dispensability,	PC_0,	PC_1,	Representative)
 }

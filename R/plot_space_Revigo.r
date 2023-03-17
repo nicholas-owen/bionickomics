@@ -1,10 +1,13 @@
 
 #' Plots 2D semantic space of ReviGO results for gene ontology analysis
+#' data format:
+#' (df format TermID,	Name,	Value,	LogSize,	Frequency,	Uniqueness,	Dispensability,	PC_0,	PC_1,	Representative)
 #'
 #' @param revigoData - dataframe of the output table from Revigo analysis
 #' @param dispens - numeric filter threshold for dispensibility
 #' @param reduce - reduces the points plotted in line with dispensibility
 #' @param output - filename with full path of output plot (.svg)
+#' @param scale - scaling of Value; as-is (default) vs 'log'
 #' @param ...
 
 #'
@@ -12,11 +15,11 @@
 #' @export
 #'
 #' @examples
-plot_space_Revigo<-function(revigoData, dispens, reduce=TRUE, output, ...){
+plot_space_Revigo<-function(revigoData, dispens, reduce=TRUE, output, scale="as-is", ...){
   library(bionickomics)
-  load_pack(ggplot2)
-  load_pack(scales)
-  load_pack(stringr)
+  require(ggplot2)
+  require(scales)
+  require(stringr)
 
 
   df <- data.frame(revigoData);
@@ -35,16 +38,24 @@ plot_space_Revigo<-function(revigoData, dispens, reduce=TRUE, output, ...){
   }
 
   df$Name <- str_wrap(df$Name, width = 20)
-
+  if (scale=="log"){
   df$Value<-log(-(df$Value))
+  message("Rescaling to log(Value) ")
+  }
 
   p1 <- ggplot(data = df)
 
   p1 <-
     p1 + geom_point(aes(PC_0, PC_1, colour = -Value, size = LogSize), alpha = I(0.6))
 
-  p1 <-
-    p1 + scale_colour_gradientn(colours = rainbow(6), limits = c(-(max(df$Value)), 0))
+  if (scale=="log"){
+    p1 <- p1 + scale_colour_gradientn(colours = rainbow(6), limits = c(-(max(df$Value)), 0))
+  } else {
+    p1 <- p1 + scale_colour_gradientn(colours = rainbow(6), limits = c(-(max(df$Value)), -(min(df$Value))))
+  }
+
+
+
 
   p1 <-
     p1 + geom_point(

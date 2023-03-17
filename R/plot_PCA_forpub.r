@@ -16,11 +16,12 @@ plot_PCA_forpub <- function(rlogdata, samplesToRemove = "NONE",
   require("PCAtools")
   require("DESeq2")
   require("ggplot2")
+  require("ggalt")
   #input will be the rld object from transformed DDS object
 
   #reordering based on alpha
   rlogcounts<-assay(rlogdata)
-  rlogcounts<-rlogcounts[,order(colnames(rlogcounts))]
+  #rlogcounts<-rlogcounts[,order(colnames(rlogcounts))]
   rlogcounts<-rlogcounts[, !colnames(rlogcounts) %in% samplesToRemove]
   dfMeta<-colData(rld)
   dfMeta<-dfMeta[!(row.names(dfMeta) %in% samplesToRemove), ]
